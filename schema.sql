@@ -1,14 +1,25 @@
+-- =====================================================
+--  DT JOB (Dream Team Job) - Step 01 : schéma de la BDD
+--  Dialecte : MySQL / MariaDB
+-- =====================================================
+
+SET NAMES utf8mb4;
+
 CREATE DATABASE IF NOT EXISTS dtjob
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 USE dtjob;
 
+-- Pour pouvoir relancer le script sans erreur
 DROP TABLE IF EXISTS applications;
 DROP TABLE IF EXISTS ads;
 DROP TABLE IF EXISTS people;
 DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS companies;
 
+-- -----------------------------------------------------
+-- COMPANIES : les entreprises qui publient des annonces
+-- -----------------------------------------------------
 CREATE TABLE companies (
   id          INT AUTO_INCREMENT PRIMARY KEY,
   name        VARCHAR(150) NOT NULL,
@@ -18,11 +29,19 @@ CREATE TABLE companies (
   created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- -----------------------------------------------------
+-- CATEGORIES : une annonce appartient à UNE catégorie
+-- -----------------------------------------------------
 CREATE TABLE categories (
   id   INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100) NOT NULL UNIQUE
 );
 
+-- -----------------------------------------------------
+-- PEOPLE : candidats, recruteurs et admins
+-- password_hash est NULL pour un candidat "invité"
+-- (qui postule sans compte, cf. Step 05 vs Step 06)
+-- -----------------------------------------------------
 CREATE TABLE people (
   id            INT AUTO_INCREMENT PRIMARY KEY,
   first_name    VARCHAR(100) NOT NULL,
@@ -34,6 +53,9 @@ CREATE TABLE people (
   created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- -----------------------------------------------------
+-- ADS : les annonces
+-- -----------------------------------------------------
 CREATE TABLE ads (
   id                 INT AUTO_INCREMENT PRIMARY KEY,
   title              VARCHAR(200) NOT NULL,
@@ -54,6 +76,10 @@ CREATE TABLE ads (
   FOREIGN KEY (contact_person_id) REFERENCES people(id)     ON DELETE SET NULL
 );
 
+-- -----------------------------------------------------
+-- APPLICATIONS : une personne postule à une annonce
+-- UNIQUE(ad_id, person_id) = on ne postule qu'une fois
+-- -----------------------------------------------------
 CREATE TABLE applications (
   id         INT AUTO_INCREMENT PRIMARY KEY,
   ad_id      INT NOT NULL,
@@ -66,6 +92,11 @@ CREATE TABLE applications (
   FOREIGN KEY (person_id) REFERENCES people(id) ON DELETE CASCADE,
   UNIQUE (ad_id, person_id)
 );
+
+-- =====================================================
+--  DONNÉES DE TEST (juste pour vérifier le schéma)
+--  Au Step 04, on remplira la BDD via le backend.
+-- =====================================================
 
 INSERT INTO categories (name) VALUES
   ('Développement'), ('Design'), ('Marketing');
