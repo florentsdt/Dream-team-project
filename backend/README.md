@@ -1,7 +1,7 @@
 # DT Job : Backend (API REST + base de données)
 
 Projet **Job Board** de l'équipe *Dream Team Job*.
-Stack : **Node.js + Express 5**, **MySQL** (driver `mysql2`).
+Stack : **PHP 8.1+ (natif, sans framework)**, **PDO**, **MySQL**.
 
 ## Step 01 : Base de données
 
@@ -25,10 +25,10 @@ mysql -u root < queries.sql     # les 3 requêtes d'exemple
 ### Lancer l'API
 
 ```bash
+brew install php                                   # une seule fois (PHP 8.1 ou plus)
 cd backend
-npm install
-npm start            # http://localhost:3000   (npm run dev = rechargement auto)
-npm run seed         # remplit la BDD VIA l'API (à lancer une fois l'API démarrée)
+php -S localhost:3000 -t public public/index.php   # http://localhost:3000
+php seed.php                                       # dans un 2e terminal : remplit la BDD VIA l'API
 ```
 
 La config par défaut (MySQL en local, `root` sans mot de passe, base `dtjob`) fonctionne sans fichier `.env`.
@@ -97,13 +97,16 @@ curl -X POST http://localhost:3000/ads/1/applications -H "Content-Type: applicat
 
 ```
 backend/
-  src/server.js        point d'entrée
-  src/db.js            connexion MySQL
-  src/lib/crud.js      fabrique de routes CRUD (pagination, filtres, validation)
-  src/lib/errors.js    erreurs -> codes HTTP
-  src/routes/*.js      une ressource par fichier
-  seed.js              remplit la BDD via l'API
+  public/index.php     point d'entrée unique (CORS, erreurs -> JSON)
+  src/helpers.php      validation, pagination, erreurs MySQL -> codes HTTP
+  src/Db.php           connexion PDO + requêtes préparées
+  src/Router.php       routeur ("/ads/{id}/applications")
+  src/Resource.php     CRUD générique (liste paginée, filtres, validation)
+  src/routes.php       déclaration des ressources et des routes
+  seed.php             remplit la BDD via l'API
 ```
+
+Toutes les requêtes SQL sont **préparées** (valeurs liées, jamais concaténées) : pas d'injection SQL.
 
 ### À faire aux étapes suivantes
 
