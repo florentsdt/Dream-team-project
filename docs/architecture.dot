@@ -1,0 +1,15 @@
+digraph arch {
+  rankdir=LR; bgcolor="white"; nodesep=0.5; ranksep=0.9; pad=0.3;
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=12, margin="0.2,0.12", color="#0E1330", penwidth=1.4];
+  edge [fontname="Helvetica", fontsize=10, color="#0033FF", penwidth=1.4, arrowsize=0.8];
+
+  browser [fillcolor="#E6EDFF", label=<<b>Browser</b><br/>pages/*.html + static/css + static/js<br/><font point-size="10">index · login · register · account · admin</font><br/><font point-size="10">vanilla JavaScript (fetch)</font>>];
+  flask [fillcolor="#FFF2D6", label=<<b>Flask server  (app.py)</b><br/><font point-size="10">1. page routes  /  /login  /register  /account  /admin</font><br/><font point-size="10">2. REST API  /api/...  (JSON)</font><br/><font point-size="10">3. session cookie auth + roles user / admin</font><br/><font point-size="10">4. e-mail notification to the recruiter</font>>];
+  db [shape=cylinder, fillcolor="#DDF8EC", label=<<b>SQLite</b><br/>jobboard.db<br/><font point-size="10">created from schema.sql</font>>];
+  mail [shape=note, fillcolor="#F2F4FA", label=<<b>SMTP server</b><br/><font point-size="10">(optional: otherwise the mail<br/>is printed in the console)</font>>];
+
+  browser -> flask [label="GET page (HTML, CSS, JS)\l"];
+  browser -> flask [label="fetch('/api/...')\lJSON + session cookie\l", constraint=false];
+  flask -> db [label="SQL (sqlite3)\lforeign keys ON\l"];
+  flask -> mail [label="on each application", style=dashed];
+}

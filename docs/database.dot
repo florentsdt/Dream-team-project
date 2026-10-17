@@ -1,0 +1,51 @@
+digraph db {
+  rankdir=LR; bgcolor="white"; nodesep=0.55; ranksep=1.1; pad=0.3;
+  node [shape=plain, fontname="Helvetica", fontsize=11];
+  edge [fontname="Helvetica", fontsize=10, color="#0033FF", penwidth=1.4, arrowsize=0.8, arrowhead=crow, arrowtail=tee, dir=both];
+
+  companies [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4" color="#0E1330">
+    <tr><td bgcolor="#0033FF"><font color="white"><b>companies</b></font></td></tr>
+    <tr><td align="left"><b>id</b>  PK</td></tr>
+    <tr><td align="left">name  UNIQUE, NOT NULL</td></tr>
+    <tr><td align="left">website, location, description</td></tr>
+    <tr><td align="left">created_at</td></tr></table>>];
+  categories [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4" color="#0E1330">
+    <tr><td bgcolor="#0033FF"><font color="white"><b>categories</b></font></td></tr>
+    <tr><td align="left"><b>id</b>  PK</td></tr>
+    <tr><td align="left">name  UNIQUE, NOT NULL</td></tr></table>>];
+  people [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4" color="#0E1330">
+    <tr><td bgcolor="#0033FF"><font color="white"><b>people</b></font></td></tr>
+    <tr><td align="left"><b>id</b>  PK</td></tr>
+    <tr><td align="left">first_name, last_name  NOT NULL</td></tr>
+    <tr><td align="left">email  UNIQUE, NOT NULL</td></tr>
+    <tr><td align="left">phone</td></tr>
+    <tr><td align="left">password_hash  (NULL = no account)</td></tr>
+    <tr><td align="left">role  'user' | 'admin'</td></tr>
+    <tr><td align="left">created_at</td></tr></table>>];
+  advertisements [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4" color="#0E1330">
+    <tr><td bgcolor="#FF5A36"><b>advertisements</b></td></tr>
+    <tr><td align="left"><b>id</b>  PK</td></tr>
+    <tr><td align="left">title, short_description  NOT NULL</td></tr>
+    <tr><td align="left">full_description, wage, location, working_time</td></tr>
+    <tr><td align="left">contract_type  Internship | Apprenticeship |<br align="left"/>Full-time | Part-time | Freelance<br align="left"/></td></tr>
+    <tr><td align="left"><b>company_id</b>  FK  NOT NULL</td></tr>
+    <tr><td align="left"><b>contact_id</b>  FK  (nullable)</td></tr>
+    <tr><td align="left"><b>category_id</b>  FK  (nullable)</td></tr>
+    <tr><td align="left">created_at</td></tr></table>>];
+  applications [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4" color="#0E1330">
+    <tr><td bgcolor="#2BE59A"><b>applications</b></td></tr>
+    <tr><td align="left"><b>id</b>  PK</td></tr>
+    <tr><td align="left"><b>advertisement_id</b>  FK  NOT NULL</td></tr>
+    <tr><td align="left"><b>person_id</b>  FK  NOT NULL</td></tr>
+    <tr><td align="left">message  NOT NULL</td></tr>
+    <tr><td align="left">status  pending | reviewed | accepted | rejected</td></tr>
+    <tr><td align="left">email_sent  0 | 1</td></tr>
+    <tr><td align="left">created_at</td></tr>
+    <tr><td align="left"><i>UNIQUE (advertisement_id, person_id)</i></td></tr></table>>];
+
+  companies -> advertisements [label="1 company : N ads\l(CASCADE)\l"];
+  categories -> advertisements [label="1 category : N ads\l(SET NULL)\l"];
+  people -> advertisements [label="1 contact : N ads\l(SET NULL)\l"];
+  advertisements -> applications [label="1 ad : N applications\l(CASCADE)\l"];
+  people -> applications [label="1 person : N applications\l(CASCADE)\l"];
+}

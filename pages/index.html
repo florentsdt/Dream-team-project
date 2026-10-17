@@ -1,0 +1,58 @@
+<!doctype html><html lang="fr"><head><title>DT Job Board</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%2322252A%27/%3E%3Crect x=%275%27 y=%2722%27 width=%2711%27 height=%274%27 fill=%27%233E5C50%27/%3E%3C/svg%3E"><link rel="stylesheet" href="/static/css/style.css"></head><body>
+<header class="top"><a class="brand" href="/"><span class="dt">DT</span> Job Board</a><nav id="nav" aria-label="Compte"></nav></header>
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-text">
+      <p class="kicker">Emplois &middot; Stages &middot; Alternances</p>
+      <h1>Votre prochain job tech commence <span class="hl">ici</span>.</h1>
+      <p class="lead">Parcourez les offres d'entreprises qui recrutent des développeurs, découvrez les détails en un clic et postulez en une minute.</p>
+      <form id="search" role="search">
+        <input id="q" type="search" placeholder="Python, Paris, stage..." aria-label="Rechercher des offres">
+        <button class="btn solid">Rechercher</button>
+      </form>
+    </div>
+    <aside class="hero-stats" aria-label="DT Job Board en chiffres">
+      <div class="stat"><strong id="s-offers">-</strong><span>offres ouvertes</span></div>
+      <div class="stat"><strong id="s-companies">-</strong><span>entreprises</span></div>
+      <div class="stat"><strong id="s-categories">-</strong><span>catégories</span></div>
+    </aside>
+  </div>
+</section>
+<main>
+  <form id="filters" class="filters" aria-label="Filtrer les offres">
+    <label>Contrat
+      <select id="f-contract">
+        <option value="">Tous les contrats</option>
+        <option value="Internship">Stage</option><option value="Apprenticeship">Alternance</option><option value="Full-time">Temps plein</option><option value="Part-time">Temps partiel</option><option value="Freelance">Freelance</option>
+      </select></label>
+    <label>Catégorie
+      <select id="f-category"><option value="">Toutes les catégories</option></select></label>
+    <label>Lieu
+      <input id="f-location" type="search" placeholder="Paris, Lyon, Remote..."></label>
+    <label>Publiée depuis le
+      <input id="f-date" type="date"></label>
+    <label>Durée
+      <select id="f-duration">
+        <option value="">Toutes les durées</option>
+        <option value="1-3">1 à 3 mois</option><option value="4-6">4 à 6 mois</option><option value="7-12">7 à 12 mois</option><option value="13-999">Plus de 12 mois</option>
+      </select></label>
+    <button type="button" class="btn" id="reset" hidden>Effacer les filtres</button>
+  </form>
+  <p class="count" id="count" role="status" aria-live="polite"></p>
+  <section class="board" id="ads" aria-label="Offres d'emploi"></section>
+  <nav class="pager" id="pager" aria-label="Pagination"></nav>
+</main>
+<footer class="foot"><span>DT Job Board</span><a href="/">Toutes les offres</a></footer>
+<script src="/static/js/common.js"></script><script src="/static/js/index.js"></script>
+<script>
+  // Numbers shown in the banner, read from the public API (total of each list)
+  ["offers:/advertisements", "companies:/companies", "categories:/categories"].forEach(async item => {
+    const [id, path] = item.split(":");
+    try { document.getElementById("s-" + id).textContent = (await api(path + "?per_page=1")).total; } catch { /* keeps the dash */ }
+  });
+</script>
+</body></html>
