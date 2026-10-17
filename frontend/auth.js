@@ -1,0 +1,1 @@
+const API_URL="http://localhost:3000";function saveSession(d){localStorage.setItem("token",d.token);localStorage.setItem("user",JSON.stringify(d.user))}function getStoredUser(){try{return JSON.parse(localStorage.getItem("user")||"null")}catch{return null}}function logout(){localStorage.removeItem("token");localStorage.removeItem("user");location.href="login.html"}
